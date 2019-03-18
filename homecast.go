@@ -35,11 +35,9 @@ func (g *CastDevice) Close() {
 }
 
 // SetVolume sets volume. volume must be 0.0 ~ 1.0.
-func (g *CastDevice) SetVolume(ctx context.Context, volume float64)  {
+func (g *CastDevice) SetVolume(ctx context.Context, volume float64) error {
 	_, err = g.client.Receiver().SetVolume(ctx, &controllers.Volume{Level: &volume})
-	if err != nil {
-		fmt.Println("Volume Error")
-	}
+	return err
 }
 
 
