@@ -34,6 +34,20 @@ func (g *CastDevice) Close() {
 	g.client.Close()
 }
 
+// SetVolume sets volume. volume must be 0.0 ~ 1.0.
+func (c *CastDevice) SetVolume(ctx context.Context, volume float64) error {
+	client := cast.NewClient(c.ip, c.port)
+	defer client.Close()
+	err := client.Connect(c.ctx)
+	if err != nil {
+		return err
+	}
+
+	_, err = client.Receiver().SetVolume(c.ctx, &controllers.Volume{Level: &volume})
+	return err
+}
+
+
 // Speak speaks given text on cast device
 func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 	url, err := tts(text, lang)
