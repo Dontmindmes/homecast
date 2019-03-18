@@ -36,9 +36,9 @@ func (g *CastDevice) Close() {
 
 // SetVolume sets volume. volume must be 0.0 ~ 1.0.
 func (c *CastDevice) SetVolume(ctx context.Context, volume float64) error {
-	client := cast.NewClient(c.ip, c.port)
+	client := cast.NewConnection()
 	defer client.Close()
-	err := client.Connect(c.ctx)
+	err := client.Connect(ctx)
 	if err != nil {
 		return err
 	}
