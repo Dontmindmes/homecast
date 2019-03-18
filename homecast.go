@@ -36,13 +36,6 @@ func (g *CastDevice) Close() {
 
 // SetVolume sets volume. volume must be 0.0 ~ 1.0.
 func (g *CastDevice) SetVolume(ctx context.Context, volume float64) error {
-	client := castnet.NewConnection()
-	defer client.Close()
-	err := client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-
 	_, err = client.Receiver().SetVolume(ctx, &controllers.Volume{Level: &volume})
 	return err
 }
