@@ -56,23 +56,37 @@ func (g *CastDevice) PlayO(ctx context.Context, url string) error {
 	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
 		return err
 	}
-	
-	media, err := g.client.Media(ctx)
+	defer conn.Close()
+
+	status, err := g.client.Receiver().LaunchApp(ctx, cast.AppMedia)
 	if err != nil {
 		return err
 	}
+	app := status.GetSessionByAppId(cast.AppMedia)
 
-	item := controllers.MediaItem{
-		ContentId:   url,
-		StreamType:  "BUFFERED",
-		ContentType: "audio/mpeg",
+	cc := controllers.NewConnectionController(conn, g.client.Events, cast.DefaultSender, *app.TransportId)
+	if err := cc.Start(ctx); err != nil {
+		return err
 	}
-	_, err = media.LoadMedia(ctx, item, 0, true, nil)
+	media := controllers.NewMediaController(conn, g.client.Events, cast.DefaultSender, *app.TransportId)
+	if err := media.Start(ctx); err != nil {
+		return err
+	}
+
+	mediaItem := controllers.MediaItem{
+		ContentId:   url,
+		ContentType: "audio/mp3",
+		StreamType:  "BUFFERED",
+	}
+
+	log.Printf("[INFO] Load media: content_id=%s", mediaItem.ContentId)
+	_, err = media.LoadMedia(ctx, mediaItem, 0, true, nil)
+
 	return err
 }
 
 // Play plays media contents on cast device
-func (g *CastDevice) Play(ctx context.Context, url string) error {
+func (g *CastDevice) Play(ctx context.Context, *url.URL) error {
 	conn := castnet.NewConnection()
 	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
 		return err
@@ -95,7 +109,7 @@ func (g *CastDevice) Play(ctx context.Context, url string) error {
 	}
 
 	mediaItem := controllers.MediaItem{
-		ContentId:   url,
+		ContentId:   url.String(),
 		ContentType: "audio/mp3",
 		StreamType:  "BUFFERED",
 	}
