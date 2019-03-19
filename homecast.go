@@ -135,7 +135,7 @@ func LookupAndConnect(ctx context.Context) []*CastDevice {
 
 // tts provides text-to-speech sound url.
 // NOTE: it seems to be unofficial.
-func tts(text, lang string) (*url.URL, error) {
+func tts(text, lang string) (url, error) {
 	base := "https://translate.google.com/translate_tts?client=tw-ob&ie=UTF-8&q=%s&tl=%s"
 	return url.Parse(fmt.Sprintf(base, url.QueryEscape(text), url.QueryEscape(lang)))
 }
