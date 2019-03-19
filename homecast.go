@@ -67,7 +67,7 @@ func (g *CastDevice) PlayO(ctx context.Context, url string) error {
 		StreamType:  "BUFFERED",
 		ContentType: "audio/mpeg",
 	}
-	_, err = media.LoadMedia(ctx, item, 0, true, map[string]interface{}{})
+	_, err = media.LoadMedia(ctx, item, 0, true, nil)
 	return err
 }
 
