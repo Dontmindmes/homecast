@@ -34,13 +34,6 @@ func (g *CastDevice) Close() {
 	g.client.Close()
 }
 
-// SetVolume sets volume. volume must be 0.0 ~ 1.0.
-func (g *CastDevice) SetVolume(ctx context.Context, volume float64)  {
-	_, _ = g.client.Receiver().SetVolume(ctx, &controllers.Volume{Level: &volume})
-	
-}
-
-
 // Speak speaks given text on cast device
 func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 	url, err := tts(text, lang)
@@ -50,26 +43,14 @@ func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 	return g.Play(ctx, url)
 }
 
-// Play make Google Home play music or sound.
-func (g *CastDevice) PlayO(ctx context.Context, url string) error {
-	conn := castnet.NewConnection()
-		
-	media, err := client.Media(ctx)
+func (g *CastDevice) SetVolume(ctx context.Context, volume float64)  {
+	_, err = g.client.Receiver().SetVolume(ctx, &controllers.Volume{Level: &volume})
 	if err != nil {
-		return err
+		fmt.Println(err)
 	}
-
-	item := controllers.MediaItem{
-		ContentId:   url,
-		StreamType:  "BUFFERED",
-		ContentType: "audio/mpeg",
-	}
-	_, err = media.LoadMedia(ctx, item, 0, true, map[string]interface{}{})
-	return err
 }
-
 // Play plays media contents on cast device
-func (g *CastDevice) Play(ctx context.Context, *url.URL) error {
+func (g *CastDevice) Play(ctx context.Context, url *url.URL) error {
 	conn := castnet.NewConnection()
 	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
 		return err
