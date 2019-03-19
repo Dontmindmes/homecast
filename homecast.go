@@ -51,38 +51,21 @@ func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 }
 
 // Play make Google Home play music or sound.
-func (g *CastDevice) PlayO(ctx context.Context, url string)  {
+func (g *CastDevice) PlayO(ctx context.Context, url string) error {
 	conn := castnet.NewConnection()
-	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
-		fmt.Println(err)
-	}
-	defer conn.Close()
-
-	status, err := g.client.Receiver().LaunchApp(ctx, cast.AppMedia)
+		
+	media, err := client.Media(ctx)
 	if err != nil {
-		fmt.Println(err)
-	}
-	app := status.GetSessionByAppId(cast.AppMedia)
-
-	cc := controllers.NewConnectionController(conn, g.client.Events, cast.DefaultSender, *app.TransportId)
-	if err := cc.Start(ctx); err != nil {
-		fmt.Println(err)
-	}
-	media := controllers.NewMediaController(conn, g.client.Events, cast.DefaultSender, *app.TransportId)
-	if err := media.Start(ctx); err != nil {
-		fmt.Println(err)
+		return err
 	}
 
-	mediaItem := controllers.MediaItem{
+	item := controllers.MediaItem{
 		ContentId:   url,
-		ContentType: "audio/mp3",
 		StreamType:  "BUFFERED",
+		ContentType: "audio/mpeg",
 	}
-
-	log.Printf("[INFO] Load media: content_id=%s", mediaItem.ContentId)
-	_, err = media.LoadMedia(ctx, mediaItem, 0, true, nil)
-
-	fmt.Println(err)
+	_, err = media.LoadMedia(ctx, item, 0, true, map[string]interface{}{})
+	return err
 }
 
 // Play plays media contents on cast device
