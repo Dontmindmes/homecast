@@ -72,7 +72,7 @@ func (g *CastDevice) PlayO(ctx context.Context, url string) error {
 }
 
 // Play plays media contents on cast device
-func (g *CastDevice) Play(ctx context.Context, url *url.URL) error {
+func (g *CastDevice) Play(ctx context.Context, url string) error {
 	conn := castnet.NewConnection()
 	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
 		return err
@@ -95,7 +95,7 @@ func (g *CastDevice) Play(ctx context.Context, url *url.URL) error {
 	}
 
 	mediaItem := controllers.MediaItem{
-		ContentId:   url.String(),
+		ContentId:   url,
 		ContentType: "audio/mp3",
 		StreamType:  "BUFFERED",
 	}
