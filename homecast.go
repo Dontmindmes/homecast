@@ -43,11 +43,9 @@ func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 	return g.Play(ctx, url)
 }
 
-func (g *CastDevice) SetVolume(ctx context.Context, volume float64)  {
+func (g *CastDevice) SetVolume(ctx context.Context, volume float64) error {
 	_, err = g.client.Receiver().SetVolume(ctx, &controllers.Volume{Level: &volume})
-	if err != nil {
-		fmt.Println(err)
-	}
+	return err
 }
 // Play plays media contents on cast device
 func (g *CastDevice) Play(ctx context.Context, url *url.URL) error {
