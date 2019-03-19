@@ -43,16 +43,7 @@ func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 	return g.Play(ctx, url)
 }
 
-func (g *CastDevice) SetVolume(ctx context.Context, volume float64) {
 
-	conn := castnet.NewConnection()
-	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	_, _ = client.Receiver().SetVolume(c.ctx, &controllers.Volume{Level: &volume})	
-}
 // Play plays media contents on cast device
 func (g *CastDevice) Play(ctx context.Context, url *url.URL) error {
 	conn := castnet.NewConnection()
