@@ -74,7 +74,7 @@ func (g *CastDevice) Play(ctx context.Context, url *url.URL) error {
 	}
 
 	mediaItem := controllers.MediaItem{
-		ContentId:   url,
+		ContentId:   url.String(),
 		ContentType: "audio/mp3",
 		StreamType:  "BUFFERED",
 	}
