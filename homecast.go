@@ -52,6 +52,10 @@ func (g *CastDevice) Speak(ctx context.Context, text, lang string) error {
 
 // Play make Google Home play music or sound.
 func (g *CastDevice) PlayO(ctx context.Context, url string) error {
+	conn := castnet.NewConnection()
+	if err := conn.Connect(ctx, g.AddrV4, g.Port); err != nil {
+		return err
+	}
 	
 	media, err := g.client.Media(ctx)
 	if err != nil {
